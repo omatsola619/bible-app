@@ -1,47 +1,41 @@
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { useBible } from "@/contexts/bible-context";
-import { BibleAPI } from "@/services/bible-api";
-import type { BibleBook } from "@/types/bible";
-import { router } from "expo-router";
-import { useState } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from 'expo-router'
+import { useState } from 'react'
+import { FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { ThemedText } from '@/components/themed-text'
+import { ThemedView } from '@/components/themed-view'
+import { useBible } from '@/contexts/bible-context'
+import { BibleAPI } from '@/services/bible-api'
+import type { BibleBook } from '@/types/bible'
 
 export default function BibleScreen() {
-  const [expandedBook, setExpandedBook] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const { loadChapter } = useBible();
+  const [expandedBook, setExpandedBook] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const { loadChapter } = useBible()
 
-  const books = BibleAPI.getBooks();
+  const books = BibleAPI.getBooks()
 
   const filteredBooks = books.filter((book) =>
     book.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  )
 
   const handleBookPress = (book: BibleBook) => {
     if (expandedBook === book.name) {
-      setExpandedBook(null);
+      setExpandedBook(null)
     } else {
-      setExpandedBook(book.name);
+      setExpandedBook(book.name)
     }
-  };
+  }
 
   const handleChapterPress = async (book: BibleBook, chapter: number) => {
-    await loadChapter(book, chapter);
-    router.push("/bible/chapter");
-  };
+    await loadChapter(book, chapter)
+    router.push('/bible/chapter')
+  }
 
   const renderChapterItem = ({ item: chapter }: { item: number }) => {
-    const book = books.find((b) => b.name === expandedBook);
+    const book = books.find((b) => b.name === expandedBook)
     if (!book) {
-      return null;
+      return null
     }
 
     return (
@@ -51,27 +45,22 @@ export default function BibleScreen() {
       >
         <ThemedText style={styles.chapterText}>{chapter}</ThemedText>
       </TouchableOpacity>
-    );
-  };
+    )
+  }
 
   const renderBookItem = ({ item: book }: { item: BibleBook }) => {
-    const isExpanded = expandedBook === book.name;
-    const chapters = Array.from({ length: book.chapters }, (_, i) => i + 1);
+    const isExpanded = expandedBook === book.name
+    const chapters = Array.from({ length: book.chapters }, (_, i) => i + 1)
 
     return (
       <ThemedView style={styles.bookContainer}>
-        <TouchableOpacity
-          style={styles.bookItem}
-          onPress={() => handleBookPress(book)}
-        >
+        <TouchableOpacity style={styles.bookItem} onPress={() => handleBookPress(book)}>
           <ThemedView style={styles.bookInfo}>
             <ThemedText type="defaultSemiBold" style={styles.bookName}>
               {book.name}
             </ThemedText>
           </ThemedView>
-          <ThemedText style={styles.expandIcon}>
-            {isExpanded ? "▼" : "▶"}
-          </ThemedText>
+          <ThemedText style={styles.expandIcon}>{isExpanded ? '▼' : '▶'}</ThemedText>
         </TouchableOpacity>
 
         {isExpanded && (
@@ -87,11 +76,11 @@ export default function BibleScreen() {
           </View>
         )}
       </ThemedView>
-    );
-  };
+    )
+  }
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
       <ThemedView style={styles.container}>
         {/* Search Bar */}
         <View style={styles.searchContainer}>
@@ -117,7 +106,7 @@ export default function BibleScreen() {
         />
       </ThemedView>
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -133,15 +122,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.05)",
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.1)",
-    shadowColor: "#000",
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 1,
@@ -158,7 +147,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: "#333",
+    color: '#333',
   },
   booksList: {
     paddingBottom: 0,
@@ -167,18 +156,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.1)",
-    overflow: "hidden",
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    overflow: 'hidden',
   },
   bookItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
   },
   bookInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
   },
   bookName: {
@@ -186,28 +175,28 @@ const styles = StyleSheet.create({
   },
   expandIcon: {
     fontSize: 16,
-    color: "#3b82f6",
-    fontWeight: "600",
+    color: '#3b82f6',
+    fontWeight: '600',
   },
   chaptersContainer: {
     borderTopWidth: 1,
-    borderTopColor: "rgba(0, 0, 0, 0.1)",
+    borderTopColor: 'rgba(0, 0, 0, 0.1)',
     padding: 16,
   },
   chaptersGrid: {
-    alignItems: "flex-start",
+    alignItems: 'flex-start',
   },
   chapterItem: {
-    width: "18%",
+    width: '18%',
     aspectRatio: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.15)",
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
     borderRadius: 8,
-    margin: "1%",
-    justifyContent: "center",
-    alignItems: "center",
+    margin: '1%',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.2)",
-    shadowColor: "#000",
+    borderColor: 'rgba(0, 0, 0, 0.2)',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 1,
@@ -218,7 +207,7 @@ const styles = StyleSheet.create({
   },
   chapterText: {
     fontSize: 14,
-    color: "#333",
-    fontWeight: "600",
+    color: '#333',
+    fontWeight: '600',
   },
-});
+})
