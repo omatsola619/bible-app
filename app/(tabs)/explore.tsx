@@ -1,6 +1,6 @@
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native'
+import { ThemedText } from '@/components/themed-text'
+import { ThemedView } from '@/components/themed-view'
 
 export default function ProgressScreen() {
   return (
@@ -9,48 +9,34 @@ export default function ProgressScreen() {
         <ThemedText type="title" style={styles.title}>
           Progress
         </ThemedText>
-        <ThemedText style={styles.subtitle}>
-          Track your Bible learning journey
-        </ThemedText>
-        <ThemedText style={styles.description}>
-          Coming soon features:
-        </ThemedText>
+        <ThemedText style={styles.subtitle}>Track your Bible learning journey</ThemedText>
+        <ThemedText style={styles.description}>Coming soon features:</ThemedText>
 
         <ThemedView style={styles.featuresList}>
           <ThemedView style={styles.featureItem}>
             <ThemedText style={styles.featureIcon}>📊</ThemedText>
-            <ThemedText style={styles.featureText}>
-              Reading statistics and streaks
-            </ThemedText>
+            <ThemedText style={styles.featureText}>Reading statistics and streaks</ThemedText>
           </ThemedView>
           <ThemedView style={styles.featureItem}>
             <ThemedText style={styles.featureIcon}>🏆</ThemedText>
-            <ThemedText style={styles.featureText}>
-              Achievements and badges
-            </ThemedText>
+            <ThemedText style={styles.featureText}>Achievements and badges</ThemedText>
           </ThemedView>
           <ThemedView style={styles.featureItem}>
             <ThemedText style={styles.featureIcon}>📈</ThemedText>
-            <ThemedText style={styles.featureText}>
-              Learning progress tracking
-            </ThemedText>
+            <ThemedText style={styles.featureText}>Learning progress tracking</ThemedText>
           </ThemedView>
           <ThemedView style={styles.featureItem}>
             <ThemedText style={styles.featureIcon}>🎯</ThemedText>
-            <ThemedText style={styles.featureText}>
-              Personal goals and challenges
-            </ThemedText>
+            <ThemedText style={styles.featureText}>Personal goals and challenges</ThemedText>
           </ThemedView>
           <ThemedView style={styles.featureItem}>
             <ThemedText style={styles.featureIcon}>📅</ThemedText>
-            <ThemedText style={styles.featureText}>
-              Reading plans and schedules
-            </ThemedText>
+            <ThemedText style={styles.featureText}>Reading plans and schedules</ThemedText>
           </ThemedView>
         </ThemedView>
       </ThemedView>
     </ThemedView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -60,32 +46,32 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 16,
   },
   subtitle: {
-    textAlign: "center",
+    textAlign: 'center',
     opacity: 0.8,
     marginBottom: 24,
     fontSize: 18,
   },
   description: {
-    textAlign: "center",
+    textAlign: 'center',
     opacity: 0.7,
     marginBottom: 32,
     fontSize: 16,
   },
   featuresList: {
-    width: "100%",
+    width: '100%',
     maxWidth: 300,
   },
   featureItem: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
     paddingHorizontal: 16,
   },
@@ -99,4 +85,4 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     fontSize: 16,
   },
-});
+})

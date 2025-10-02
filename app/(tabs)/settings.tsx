@@ -1,65 +1,57 @@
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { useAuth } from "@/contexts/auth-context";
-import { useTheme } from "@/contexts/theme-context";
-import {
-  Alert,
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, StyleSheet, Switch, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { ThemedText } from '@/components/themed-text'
+import { ThemedView } from '@/components/themed-view'
+import { useAuth } from '@/contexts/auth-context'
+import { useTheme } from '@/contexts/theme-context'
 
 export default function ProfileScreen() {
-  const { themeMode, setThemeMode, isDark } = useTheme();
-  const { user, logout } = useAuth();
+  const { themeMode, setThemeMode, isDark } = useTheme()
+  const { user, logout } = useAuth()
 
   const handleLogout = () => {
-    Alert.alert("Sign Out", "Are you sure you want to sign out?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+      { text: 'Cancel', style: 'cancel' },
       {
-        text: "Sign Out",
-        style: "destructive",
+        text: 'Sign Out',
+        style: 'destructive',
         onPress: async () => {
           try {
-            await logout();
+            await logout()
             // The navigation will be handled by the root layout based on auth state
           } catch (error) {
-            console.error("Logout error:", error);
-            Alert.alert("Error", "Failed to sign out. Please try again.");
+            console.error('Logout error:', error)
+            Alert.alert('Error', 'Failed to sign out. Please try again.')
           }
         },
       },
-    ]);
-  };
+    ])
+  }
 
   const themeOptions = [
     {
-      value: "light" as const,
-      label: "Light",
-      description: "Always use light theme",
+      value: 'light' as const,
+      label: 'Light',
+      description: 'Always use light theme',
     },
     {
-      value: "dark" as const,
-      label: "Dark",
-      description: "Always use dark theme",
+      value: 'dark' as const,
+      label: 'Dark',
+      description: 'Always use dark theme',
     },
     {
-      value: "system" as const,
-      label: "System",
-      description: "Follow system setting",
+      value: 'system' as const,
+      label: 'System',
+      description: 'Follow system setting',
     },
-  ];
+  ]
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
       <ThemedView style={styles.container}>
         <ThemedView style={styles.header}>
           <ThemedText type="title">Profile</ThemedText>
-          <ThemedText style={styles.subtitle}>
-            Manage your account and preferences
-          </ThemedText>
+          <ThemedText style={styles.subtitle}>Manage your account and preferences</ThemedText>
         </ThemedView>
 
         {/* User Profile Section */}
@@ -72,23 +64,18 @@ export default function ProfileScreen() {
             <View style={styles.profileInfo}>
               <View style={styles.avatar}>
                 <ThemedText style={styles.avatarText}>
-                  {user?.name?.charAt(0).toUpperCase() || "U"}
+                  {user?.name?.charAt(0).toUpperCase() || 'U'}
                 </ThemedText>
               </View>
               <View style={styles.profileDetails}>
-                <ThemedText type="defaultSemiBold">
-                  {user?.name || "User"}
-                </ThemedText>
+                <ThemedText type="defaultSemiBold">{user?.name || 'User'}</ThemedText>
                 <ThemedText style={styles.profileEmail}>
-                  {user?.email || "user@example.com"}
+                  {user?.email || 'user@example.com'}
                 </ThemedText>
               </View>
             </View>
 
-            <TouchableOpacity
-              style={styles.logoutButton}
-              onPress={handleLogout}
-            >
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
               <ThemedText style={styles.logoutButtonText}>Sign Out</ThemedText>
             </TouchableOpacity>
           </ThemedView>
@@ -103,17 +90,11 @@ export default function ProfileScreen() {
             <ThemedView style={styles.themeHeader}>
               <ThemedText type="defaultSemiBold">Theme</ThemedText>
               <ThemedText style={styles.currentTheme}>
-                {themeMode === "system"
-                  ? "System"
-                  : themeMode === "dark"
-                  ? "Dark"
-                  : "Light"}
+                {themeMode === 'system' ? 'System' : themeMode === 'dark' ? 'Dark' : 'Light'}
               </ThemedText>
             </ThemedView>
 
-            <ThemedText style={styles.themeDescription}>
-              Choose how the app should look
-            </ThemedText>
+            <ThemedText style={styles.themeDescription}>Choose how the app should look</ThemedText>
 
             <ThemedView style={styles.themeOptions}>
               {themeOptions.map((option) => (
@@ -127,9 +108,7 @@ export default function ProfileScreen() {
                 >
                   <ThemedView style={styles.themeOptionContent}>
                     <ThemedView style={styles.themeOptionLeft}>
-                      <ThemedText type="defaultSemiBold">
-                        {option.label}
-                      </ThemedText>
+                      <ThemedText type="defaultSemiBold">{option.label}</ThemedText>
                       <ThemedText style={styles.themeOptionDescription}>
                         {option.description}
                       </ThemedText>
@@ -137,14 +116,9 @@ export default function ProfileScreen() {
 
                     <View style={styles.radioContainer}>
                       <View
-                        style={[
-                          styles.radio,
-                          themeMode === option.value && styles.radioSelected,
-                        ]}
+                        style={[styles.radio, themeMode === option.value && styles.radioSelected]}
                       >
-                        {themeMode === option.value && (
-                          <View style={styles.radioInner} />
-                        )}
+                        {themeMode === option.value && <View style={styles.radioInner} />}
                       </View>
                     </View>
                   </ThemedView>
@@ -165,14 +139,12 @@ export default function ProfileScreen() {
             <View style={styles.switchContainer}>
               <Switch
                 value={isDark}
-                onValueChange={(value) =>
-                  setThemeMode(value ? "dark" : "light")
-                }
+                onValueChange={(value) => setThemeMode(value ? 'dark' : 'light')}
                 trackColor={{
-                  false: "#e5e7eb",
-                  true: "#3b82f6",
+                  false: '#e5e7eb',
+                  true: '#3b82f6',
                 }}
-                thumbColor={isDark ? "#ffffff" : "#f3f4f6"}
+                thumbColor={isDark ? '#ffffff' : '#f3f4f6'}
               />
             </View>
           </ThemedView>
@@ -189,30 +161,21 @@ export default function ProfileScreen() {
               Sample Content
             </ThemedText>
             <ThemedText style={styles.previewText}>
-              This is how your app will look with the{" "}
-              {isDark ? "dark" : "light"} theme.
+              This is how your app will look with the {isDark ? 'dark' : 'light'} theme.
             </ThemedText>
             <View style={styles.previewButtons}>
-              <View
-                style={[styles.previewButton, { backgroundColor: "#3b82f6" }]}
-              >
-                <ThemedText style={styles.previewButtonText}>
-                  Primary
-                </ThemedText>
+              <View style={[styles.previewButton, { backgroundColor: '#3b82f6' }]}>
+                <ThemedText style={styles.previewButtonText}>Primary</ThemedText>
               </View>
-              <View
-                style={[styles.previewButton, { backgroundColor: "#10b981" }]}
-              >
-                <ThemedText style={styles.previewButtonText}>
-                  Success
-                </ThemedText>
+              <View style={[styles.previewButton, { backgroundColor: '#10b981' }]}>
+                <ThemedText style={styles.previewButtonText}>Success</ThemedText>
               </View>
             </View>
           </ThemedView>
         </ThemedView>
       </ThemedView>
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -240,14 +203,14 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   themeHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
   },
   currentTheme: {
     opacity: 0.7,
-    textTransform: "capitalize",
+    textTransform: 'capitalize',
   },
   themeDescription: {
     opacity: 0.7,
@@ -259,17 +222,17 @@ const styles = StyleSheet.create({
   themeOption: {
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "transparent",
-    overflow: "hidden",
+    borderColor: 'transparent',
+    overflow: 'hidden',
   },
   themeOptionSelected: {
-    borderColor: "#3b82f6",
-    backgroundColor: "rgba(59, 130, 246, 0.1)",
+    borderColor: '#3b82f6',
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
   },
   themeOptionContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
   },
   themeOptionLeft: {
@@ -288,27 +251,27 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: "#d1d5db",
-    alignItems: "center",
-    justifyContent: "center",
+    borderColor: '#d1d5db',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   radioSelected: {
-    borderColor: "#3b82f6",
+    borderColor: '#3b82f6',
   },
   radioInner: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: "#3b82f6",
+    backgroundColor: '#3b82f6',
   },
   quickToggleSection: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.1)",
+    borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   quickToggleHeader: {
     flex: 1,
@@ -328,7 +291,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.1)",
+    borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   previewTitle: {
     marginBottom: 8,
@@ -338,7 +301,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   previewButtons: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 12,
   },
   previewButton: {
@@ -347,34 +310,34 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   previewButtonText: {
-    color: "white",
-    fontWeight: "600",
+    color: 'white',
+    fontWeight: '600',
     fontSize: 14,
   },
   profileSection: {
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.1)",
+    borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   profileInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
   },
   avatar: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#3b82f6",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#3b82f6',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 16,
   },
   avatarText: {
-    color: "white",
+    color: 'white',
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   profileDetails: {
     flex: 1,
@@ -385,15 +348,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   logoutButton: {
-    backgroundColor: "#ef4444",
+    backgroundColor: '#ef4444',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    alignItems: "center",
+    alignItems: 'center',
   },
   logoutButtonText: {
-    color: "white",
-    fontWeight: "600",
+    color: 'white',
+    fontWeight: '600',
     fontSize: 16,
   },
-});
+})

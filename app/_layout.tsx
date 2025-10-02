@@ -6,6 +6,7 @@ import 'react-native-reanimated'
 import '../global.css'
 
 import { AuthProvider, useAuth } from '@/contexts/auth-context'
+import { BibleProvider } from '@/contexts/bible-context'
 import { ThemeProvider as CustomThemeProvider, useTheme } from '@/contexts/theme-context'
 
 export const unstable_settings = {
@@ -26,6 +27,7 @@ function RootLayoutContent() {
     const inAuthGroup = segments[0] === '(tabs)'
     const inOnboarding = segments[0] === 'onboarding'
     const inAuthScreens = segments[0] === 'login' || segments[0] === 'signup'
+    const inBibleScreens = segments[0] === 'bible'
 
     if (!hasCompletedOnboarding && !inOnboarding) {
       // User hasn't completed onboarding, redirect to onboarding
@@ -33,8 +35,8 @@ function RootLayoutContent() {
     } else if (hasCompletedOnboarding && !isAuthenticated && !inAuthScreens) {
       // User completed onboarding but not authenticated, redirect to login
       router.replace('/login')
-    } else if (hasCompletedOnboarding && isAuthenticated && !inAuthGroup) {
-      // User is authenticated, redirect to main app
+    } else if (hasCompletedOnboarding && isAuthenticated && !inAuthGroup && !inBibleScreens) {
+      // User is authenticated, redirect to main app (but allow Bible screens)
       router.replace('/(tabs)')
     }
   }, [
@@ -56,6 +58,7 @@ function RootLayoutContent() {
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="signup" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="bible" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
@@ -67,7 +70,9 @@ export default function RootLayout() {
   return (
     <CustomThemeProvider>
       <AuthProvider>
-        <RootLayoutContent />
+        <BibleProvider>
+          <RootLayoutContent />
+        </BibleProvider>
       </AuthProvider>
     </CustomThemeProvider>
   )
