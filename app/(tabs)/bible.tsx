@@ -1,20 +1,29 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useBible } from "@/contexts/bible-context";
-import { BibleAPI, type BibleBook } from "@/services/bible-api";
+import { BibleAPI } from "@/services/bible-api";
+import type { BibleBook } from "@/types/bible";
 import { router } from "expo-router";
 import { useState } from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function BibleScreen() {
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
-  const [testament, setTestament] = useState<"old" | "new" | "all">("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const { loadChapter } = useBible();
 
-  const books =
-    testament === "all"
-      ? BibleAPI.getBooks()
-      : BibleAPI.getBooks().filter((book) => book.testament === testament);
+  const books = BibleAPI.getBooks();
+
+  const filteredBooks = books.filter((book) =>
+    book.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleBookPress = (book: BibleBook) => {
     if (expandedBook === book.name) {
@@ -29,19 +38,21 @@ export default function BibleScreen() {
     router.push("/bible/chapter");
   };
 
-  const renderChapterItem = ({ item: chapter }: { item: number }) => (
-    <TouchableOpacity
-      style={styles.chapterItem}
-      onPress={() => {
-        const book = books.find((b) => b.name === expandedBook);
-        if (book) {
-          handleChapterPress(book, chapter);
-        }
-      }}
-    >
-      <ThemedText style={styles.chapterText}>{chapter}</ThemedText>
-    </TouchableOpacity>
-  );
+  const renderChapterItem = ({ item: chapter }: { item: number }) => {
+    const book = books.find((b) => b.name === expandedBook);
+    if (!book) {
+      return null;
+    }
+
+    return (
+      <TouchableOpacity
+        style={styles.chapterItem}
+        onPress={() => handleChapterPress(book, chapter)}
+      >
+        <ThemedText style={styles.chapterText}>{chapter}</ThemedText>
+      </TouchableOpacity>
+    );
+  };
 
   const renderBookItem = ({ item: book }: { item: BibleBook }) => {
     const isExpanded = expandedBook === book.name;
@@ -57,9 +68,6 @@ export default function BibleScreen() {
             <ThemedText type="defaultSemiBold" style={styles.bookName}>
               {book.name}
             </ThemedText>
-            <ThemedText style={styles.bookChapters}>
-              {book.chapters} chapters
-            </ThemedText>
           </ThemedView>
           <ThemedText style={styles.expandIcon}>
             {isExpanded ? "▼" : "▶"}
@@ -72,8 +80,9 @@ export default function BibleScreen() {
               data={chapters}
               renderItem={renderChapterItem}
               keyExtractor={(item) => item.toString()}
-              numColumns={4}
+              numColumns={5}
               contentContainerStyle={styles.chaptersGrid}
+              scrollEnabled={false}
             />
           </View>
         )}
@@ -82,107 +91,80 @@ export default function BibleScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <ThemedText type="title" style={styles.title}>
-          Bible
-        </ThemedText>
-
-        <View style={styles.testamentTabs}>
-          <TouchableOpacity
-            style={[styles.tab, testament === "old" && styles.activeTab]}
-            onPress={() => setTestament("old")}
-          >
-            <ThemedText
-              style={[
-                styles.tabText,
-                testament === "old" && styles.activeTabText,
-              ]}
-            >
-              Old Testament
-            </ThemedText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, testament === "new" && styles.activeTab]}
-            onPress={() => setTestament("new")}
-          >
-            <ThemedText
-              style={[
-                styles.tabText,
-                testament === "new" && styles.activeTabText,
-              ]}
-            >
-              New Testament
-            </ThemedText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, testament === "all" && styles.activeTab]}
-            onPress={() => setTestament("all")}
-          >
-            <ThemedText
-              style={[
-                styles.tabText,
-                testament === "all" && styles.activeTabText,
-              ]}
-            >
-              All Books
-            </ThemedText>
-          </TouchableOpacity>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      <ThemedView style={styles.container}>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <View style={styles.searchBar}>
+            <ThemedText style={styles.searchIcon}>🔍</ThemedText>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search"
+              placeholderTextColor="#9CA3AF"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+          </View>
         </View>
-      </ThemedView>
 
-      <FlatList
-        data={books}
-        renderItem={renderBookItem}
-        keyExtractor={(item) => item.name}
-        contentContainerStyle={styles.booksList}
-        showsVerticalScrollIndicator={false}
-      />
-    </ThemedView>
+        {/* Books List */}
+        <FlatList
+          data={filteredBooks}
+          renderItem={renderBookItem}
+          keyExtractor={(item) => item.name}
+          contentContainerStyle={styles.booksList}
+          showsVerticalScrollIndicator={false}
+        />
+      </ThemedView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
-  header: {
-    padding: 20,
-    paddingBottom: 10,
-  },
-  title: {
-    textAlign: "center",
+  searchContainer: {
     marginBottom: 20,
   },
-  testamentTabs: {
+  searchBar: {
     flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.05)",
     borderRadius: 12,
-    padding: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.1)",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  tab: {
+  searchIcon: {
+    fontSize: 16,
+    marginRight: 12,
+    opacity: 0.6,
+  },
+  searchInput: {
     flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  activeTab: {
-    backgroundColor: "#3b82f6",
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  activeTabText: {
-    color: "white",
+    fontSize: 16,
+    color: "#333",
   },
   booksList: {
-    padding: 20,
-    paddingTop: 10,
+    paddingBottom: 0,
   },
   bookContainer: {
-    marginBottom: 8,
+    marginBottom: 16,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "rgba(0, 0, 0, 0.1)",
@@ -195,19 +177,17 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   bookInfo: {
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   bookName: {
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  bookChapters: {
-    fontSize: 14,
-    opacity: 0.6,
+    fontSize: 18,
   },
   expandIcon: {
     fontSize: 16,
-    opacity: 0.6,
+    color: "#3b82f6",
+    fontWeight: "600",
   },
   chaptersContainer: {
     borderTopWidth: 1,
@@ -215,20 +195,30 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   chaptersGrid: {
-    gap: 8,
+    alignItems: "flex-start",
   },
   chapterItem: {
-    flex: 1,
-    backgroundColor: "rgba(59, 130, 246, 0.1)",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    width: "18%",
+    aspectRatio: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
     borderRadius: 8,
+    margin: "1%",
+    justifyContent: "center",
     alignItems: "center",
-    margin: 2,
+    borderWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.2)",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   chapterText: {
     fontSize: 14,
-    color: "#3b82f6",
-    fontWeight: "500",
+    color: "#333",
+    fontWeight: "600",
   },
 });
