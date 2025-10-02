@@ -1,0 +1,74 @@
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { Stack, useRouter, useSegments } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
+import { useEffect } from 'react'
+import 'react-native-reanimated'
+import '../global.css'
+
+import { AuthProvider, useAuth } from '@/contexts/auth-context'
+import { ThemeProvider as CustomThemeProvider, useTheme } from '@/contexts/theme-context'
+
+export const unstable_settings = {
+  anchor: '(tabs)',
+}
+
+function RootLayoutContent() {
+  const { isAuthenticated, hasCompletedOnboarding, isLoading } = useAuth()
+  const { isDark } = useTheme()
+  const router = useRouter()
+  const segments = useSegments()
+
+  useEffect(() => {
+    if (isLoading) {
+      return
+    }
+
+    const inAuthGroup = segments[0] === '(tabs)'
+    const inOnboarding = segments[0] === 'onboarding'
+    const inAuthScreens = segments[0] === 'login' || segments[0] === 'signup'
+
+    if (!hasCompletedOnboarding && !inOnboarding) {
+      // User hasn't completed onboarding, redirect to onboarding
+      router.replace('/onboarding')
+    } else if (hasCompletedOnboarding && !isAuthenticated && !inAuthScreens) {
+      // User completed onboarding but not authenticated, redirect to login
+      router.replace('/login')
+    } else if (hasCompletedOnboarding && isAuthenticated && !inAuthGroup) {
+      // User is authenticated, redirect to main app
+      router.replace('/(tabs)')
+    }
+  }, [
+    isAuthenticated,
+    hasCompletedOnboarding,
+    isLoading,
+    segments, // User is authenticated, redirect to main app
+    router.replace,
+  ])
+
+  if (isLoading) {
+    return null // Or a loading screen
+  }
+
+  return (
+    <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="signup" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
+  )
+}
+
+export default function RootLayout() {
+  return (
+    <CustomThemeProvider>
+      <AuthProvider>
+        <RootLayoutContent />
+      </AuthProvider>
+    </CustomThemeProvider>
+  )
+}
