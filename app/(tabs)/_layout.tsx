@@ -1,19 +1,19 @@
-import Icon from "@/components/Icon";
-import { useTheme } from "@/contexts/theme-context";
-import { Tabs } from "expo-router";
+import { Tabs } from 'expo-router'
+import Icon from '@/components/Icon'
+import { useTheme } from '@/contexts/theme-context'
 
 export default function TabLayout() {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme()
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#4CAF50", // Primary green
-        tabBarInactiveTintColor: isDark ? "#6B7280" : "#9CA3AF",
+        tabBarActiveTintColor: '#4CAF50', // Primary green
+        tabBarInactiveTintColor: isDark ? '#6B7280' : '#9CA3AF',
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: isDark ? "#000000" : "#FFFFFF",
-          borderTopColor: isDark ? "#374151" : "#E5E7EB",
+          backgroundColor: isDark ? '#000000' : '#FFFFFF',
+          borderTopColor: isDark ? '#374151' : '#E5E7EB',
           height: 80,
           paddingBottom: 20,
           paddingTop: 10,
@@ -23,42 +23,30 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <Icon
-              name="home"
-              size={focused ? 28 : 24}
-              color={focused ? "#4CAF50" : color}
-            />
+            <Icon name="home" size={focused ? 28 : 24} color={focused ? '#4CAF50' : color} />
           ),
         }}
       />
       <Tabs.Screen
         name="bible"
         options={{
-          title: "Bible",
+          title: 'Bible',
           tabBarIcon: ({ color, focused }) => (
-            <Icon
-              name="bible"
-              size={focused ? 28 : 24}
-              color={focused ? "#4CAF50" : color}
-            />
+            <Icon name="bible" size={focused ? 28 : 24} color={focused ? '#4CAF50' : color} />
           ),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Profile",
+          title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <Icon
-              name="profile"
-              size={focused ? 28 : 24}
-              color={focused ? "#4CAF50" : color}
-            />
+            <Icon name="profile" size={focused ? 28 : 24} color={focused ? '#4CAF50' : color} />
           ),
         }}
       />
     </Tabs>
-  );
+  )
 }

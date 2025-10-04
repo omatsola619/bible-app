@@ -117,7 +117,7 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.lessonsInfo}>
-            {section.lessons.map((lesson, index) => (
+            {section.lessons.map((lesson, _index) => (
               <View key={`${lesson.id}-info`} style={styles.lessonInfo}>
                 <ThemedText
                   type="defaultSemiBold"
@@ -155,13 +155,28 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <ThemedView style={styles.container}>
-        <View style={styles.header}>
-          <ThemedText type="title" style={styles.headerTitle}>
-            Bible Learning Path
-          </ThemedText>
-          <ThemedText style={styles.headerSubtitle}>
-            Follow your journey through God's Word
-          </ThemedText>
+        {/* Duolingo-style top bar */}
+        <View style={styles.topBar}>
+          <View style={styles.levelSection}>
+            <View style={styles.levelIcon}>
+              <ThemedText style={styles.levelNumber}>12</ThemedText>
+            </View>
+            <ThemedText style={styles.levelText}>Level</ThemedText>
+          </View>
+
+          <View style={styles.statsSection}>
+            <View style={styles.statItem}>
+              <Icon name="star" size={20} color="#FFD700" />
+              <ThemedText style={styles.statValue}>2,450</ThemedText>
+              <ThemedText style={styles.statLabel}>XP</ThemedText>
+            </View>
+
+            <View style={styles.statItem}>
+              <Icon name="check" size={20} color="#4CAF50" />
+              <ThemedText style={styles.statValue}>7</ThemedText>
+              <ThemedText style={styles.statLabel}>Day Streak</ThemedText>
+            </View>
+          </View>
         </View>
 
         <ScrollView
@@ -184,20 +199,58 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8FAFC",
   },
-  header: {
-    padding: 20,
-    paddingBottom: 10,
+  topBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  levelSection: {
     alignItems: "center",
   },
-  headerTitle: {
-    fontSize: 28,
+  levelIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#4CAF50",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  levelNumber: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+  levelText: {
+    fontSize: 12,
+    color: "#6B7280",
+    fontWeight: "500",
+  },
+  statsSection: {
+    flexDirection: "row",
+    gap: 24,
+  },
+  statItem: {
+    alignItems: "center",
+    minWidth: 60,
+  },
+  statValue: {
+    fontSize: 18,
     fontWeight: "bold",
     color: "#1F2937",
-    marginBottom: 8,
+    marginTop: 4,
   },
-  headerSubtitle: {
-    fontSize: 16,
+  statLabel: {
+    fontSize: 11,
     color: "#6B7280",
+    fontWeight: "500",
     textAlign: "center",
   },
   scrollView: {
