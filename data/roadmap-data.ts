@@ -1,0 +1,150 @@
+import type { RoadmapData } from '../types/roadmap'
+
+export const roadmapData: RoadmapData = {
+  sections: [
+    {
+      id: 'life-of-jesus',
+      title: 'The Life of Jesus',
+      description: 'Follow Jesus from birth to resurrection',
+      color: '#4CAF50', // Green
+      lessons: [
+        {
+          id: 'jesus-birth',
+          title: 'The Birth of Jesus',
+          description: 'Learn about the nativity story',
+          status: 'completed',
+          duration: '3 min',
+          color: '#4CAF50',
+        },
+        {
+          id: 'jesus-childhood',
+          title: 'Jesus as a Child',
+          description: "Discover Jesus' early years",
+          status: 'completed',
+          duration: '4 min',
+          color: '#4CAF50',
+        },
+        {
+          id: 'jesus-baptism',
+          title: 'The Baptism of Jesus',
+          description: 'Jesus begins his ministry',
+          status: 'current',
+          duration: '5 min',
+          color: '#4CAF50',
+        },
+        {
+          id: 'jesus-teaching',
+          title: "Jesus' Teaching Ministry",
+          description: 'The Sermon on the Mount and parables',
+          status: 'locked',
+          duration: '6 min',
+          color: '#4CAF50',
+        },
+        {
+          id: 'jesus-crucifixion',
+          title: 'The Crucifixion',
+          description: "Jesus' sacrifice for humanity",
+          status: 'locked',
+          duration: '7 min',
+          color: '#4CAF50',
+        },
+      ],
+    },
+    {
+      id: 'miracles-of-jesus',
+      title: 'The Miracles of Jesus',
+      description: 'Witness the power of God through Jesus',
+      color: '#FF6B6B', // Red
+      lessons: [
+        {
+          id: 'water-to-wine',
+          title: 'Water to Wine',
+          description: "Jesus' first miracle at Cana",
+          status: 'locked',
+          duration: '4 min',
+          color: '#FF6B6B',
+        },
+        {
+          id: 'feeding-5000',
+          title: 'Feeding the 5000',
+          description: 'Jesus feeds a multitude with 5 loaves',
+          status: 'locked',
+          duration: '5 min',
+          color: '#FF6B6B',
+        },
+        {
+          id: 'walking-on-water',
+          title: 'Walking on Water',
+          description: 'Jesus demonstrates power over nature',
+          status: 'locked',
+          duration: '4 min',
+          color: '#FF6B6B',
+        },
+        {
+          id: 'healing-blind',
+          title: 'Healing the Blind',
+          description: 'Jesus restores sight to the blind',
+          status: 'locked',
+          duration: '5 min',
+          color: '#FF6B6B',
+        },
+        {
+          id: 'raising-lazarus',
+          title: 'Raising Lazarus',
+          description: 'Jesus brings the dead back to life',
+          status: 'locked',
+          duration: '6 min',
+          color: '#FF6B6B',
+        },
+      ],
+    },
+    {
+      id: 'exodus-journey',
+      title: 'The Exodus Journey',
+      description: "Moses leads God's people to freedom",
+      color: '#FFD700', // Gold
+      lessons: [
+        {
+          id: 'moses-birth',
+          title: "Moses' Birth",
+          description: 'A baby saved from the Nile',
+          status: 'locked',
+          duration: '3 min',
+          color: '#FFD700',
+        },
+        {
+          id: 'burning-bush',
+          title: 'The Burning Bush',
+          description: 'God calls Moses to lead His people',
+          status: 'locked',
+          duration: '5 min',
+          color: '#FFD700',
+        },
+        {
+          id: 'ten-plagues',
+          title: 'The Ten Plagues',
+          description: "God's judgment on Egypt",
+          status: 'locked',
+          duration: '8 min',
+          color: '#FFD700',
+        },
+        {
+          id: 'red-sea',
+          title: 'Crossing the Red Sea',
+          description: 'God parts the waters for His people',
+          status: 'locked',
+          duration: '6 min',
+          color: '#FFD700',
+        },
+        {
+          id: 'ten-commandments',
+          title: 'The Ten Commandments',
+          description: 'God gives His law to His people',
+          status: 'locked',
+          duration: '7 min',
+          color: '#FFD700',
+        },
+      ],
+    },
+  ],
+}

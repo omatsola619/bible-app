@@ -1,86 +1,277 @@
-import { StyleSheet } from 'react-native'
-import { ThemedText } from '@/components/themed-text'
-import { ThemedView } from '@/components/themed-view'
+import Icon from "@/components/Icon";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { roadmapData } from "@/data/roadmap-data";
+import type { Lesson, RoadmapSection } from "@/types/roadmap";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.content}>
-        <ThemedText type="title" style={styles.title}>
-          Bible Learning Coming Soon
-        </ThemedText>
-        <ThemedText style={styles.subtitle}>
-          We're working on bringing you an amazing Bible learning experience
-        </ThemedText>
-        <ThemedText style={styles.description}>Stay tuned for features like:</ThemedText>
+  const renderLessonNode = (lesson: Lesson, index: number, isLast: boolean) => {
+    const getNodeIcon = () => {
+      switch (lesson.status) {
+        case "completed":
+          return <Icon name="check" size={24} color="#FFFFFF" />;
+        case "current":
+          return <Icon name="star" size={24} color="#FFFFFF" />;
+        case "locked":
+          return <Icon name="lock" size={20} color="#FFFFFF" />;
+        default:
+          return null;
+      }
+    };
 
-        <ThemedView style={styles.featuresList}>
-          <ThemedView style={styles.featureItem}>
-            <ThemedText style={styles.featureIcon}>📖</ThemedText>
-            <ThemedText style={styles.featureText}>Interactive Bible reading</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.featureItem}>
-            <ThemedText style={styles.featureIcon}>📝</ThemedText>
-            <ThemedText style={styles.featureText}>Personal notes and highlights</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.featureItem}>
-            <ThemedText style={styles.featureIcon}>🔍</ThemedText>
-            <ThemedText style={styles.featureText}>Advanced search and study tools</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.featureItem}>
-            <ThemedText style={styles.featureIcon}>📚</ThemedText>
-            <ThemedText style={styles.featureText}>Multiple Bible translations</ThemedText>
-          </ThemedView>
-        </ThemedView>
+    const getNodeStyle = () => {
+      const baseStyle = {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+      };
+
+      switch (lesson.status) {
+        case "completed":
+          return {
+            ...baseStyle,
+            backgroundColor: lesson.color,
+          };
+        case "current":
+          return {
+            ...baseStyle,
+            backgroundColor: lesson.color,
+            borderWidth: 4,
+            borderColor: "#FFFFFF",
+          };
+        case "locked":
+          return {
+            ...baseStyle,
+            backgroundColor: "#E5E7EB",
+            borderWidth: 2,
+            borderColor: "#9CA3AF",
+          };
+        default:
+          return baseStyle;
+      }
+    };
+
+    return (
+      <View key={lesson.id} style={styles.lessonContainer}>
+        <TouchableOpacity
+          style={getNodeStyle()}
+          onPress={() => {
+            if (lesson.status !== "locked") {
+              // TODO: Navigate to lesson
+              console.log("Navigate to lesson:", lesson.title);
+            }
+          }}
+          disabled={lesson.status === "locked"}
+        >
+          {getNodeIcon()}
+        </TouchableOpacity>
+
+        {!isLast && (
+          <View
+            style={[
+              styles.connectionLine,
+              {
+                backgroundColor:
+                  lesson.status === "locked" ? "#E5E7EB" : lesson.color,
+                height: index % 2 === 0 ? 80 : 60, // Zig-zag pattern
+              },
+            ]}
+          />
+        )}
+      </View>
+    );
+  };
+
+  const renderSection = (section: RoadmapSection) => {
+    return (
+      <ThemedView key={section.id} style={styles.sectionContainer}>
+        <View
+          style={[styles.sectionHeader, { backgroundColor: section.color }]}
+        >
+          <ThemedText type="title" style={styles.sectionTitle}>
+            {section.title}
+          </ThemedText>
+          <ThemedText style={styles.sectionDescription}>
+            {section.description}
+          </ThemedText>
+        </View>
+
+        <View style={styles.lessonsContainer}>
+          <View style={styles.lessonsPath}>
+            {section.lessons.map((lesson, index) =>
+              renderLessonNode(
+                lesson,
+                index,
+                index === section.lessons.length - 1
+              )
+            )}
+          </View>
+
+          <View style={styles.lessonsInfo}>
+            {section.lessons.map((lesson, index) => (
+              <View key={`${lesson.id}-info`} style={styles.lessonInfo}>
+                <ThemedText
+                  type="defaultSemiBold"
+                  style={[
+                    styles.lessonTitle,
+                    lesson.status === "locked" && styles.lockedText,
+                  ]}
+                >
+                  {lesson.title}
+                </ThemedText>
+                <ThemedText
+                  style={[
+                    styles.lessonDescription,
+                    lesson.status === "locked" && styles.lockedText,
+                  ]}
+                >
+                  {lesson.description}
+                </ThemedText>
+                <ThemedText
+                  style={[
+                    styles.lessonDuration,
+                    lesson.status === "locked" && styles.lockedText,
+                  ]}
+                >
+                  {lesson.duration}
+                </ThemedText>
+              </View>
+            ))}
+          </View>
+        </View>
       </ThemedView>
-    </ThemedView>
-  )
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      <ThemedView style={styles.container}>
+        <View style={styles.header}>
+          <ThemedText type="title" style={styles.headerTitle}>
+            Bible Learning Path
+          </ThemedText>
+          <ThemedText style={styles.headerSubtitle}>
+            Follow your journey through God's Word
+          </ThemedText>
+        </View>
+
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {roadmapData.sections.map(renderSection)}
+        </ScrollView>
+      </ThemedView>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
+    backgroundColor: "#F8FAFC",
+  },
+  header: {
     padding: 20,
+    paddingBottom: 10,
+    alignItems: "center",
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#1F2937",
+    marginBottom: 8,
   },
-  title: {
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  subtitle: {
-    textAlign: 'center',
-    opacity: 0.8,
-    marginBottom: 24,
-    fontSize: 18,
-  },
-  description: {
-    textAlign: 'center',
-    opacity: 0.7,
-    marginBottom: 32,
+  headerSubtitle: {
     fontSize: 16,
+    color: "#6B7280",
+    textAlign: "center",
   },
-  featuresList: {
-    width: '100%',
-    maxWidth: 300,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-    paddingHorizontal: 16,
-  },
-  featureIcon: {
-    fontSize: 24,
-    marginRight: 16,
-    width: 32,
-  },
-  featureText: {
+  scrollView: {
     flex: 1,
-    opacity: 0.8,
-    fontSize: 16,
   },
-})
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  sectionContainer: {
+    margin: 16,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  sectionHeader: {
+    padding: 20,
+    paddingBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    marginBottom: 8,
+  },
+  sectionDescription: {
+    fontSize: 16,
+    color: "#FFFFFF",
+    opacity: 0.9,
+  },
+  lessonsContainer: {
+    padding: 20,
+    flexDirection: "row",
+  },
+  lessonsPath: {
+    alignItems: "center",
+    marginRight: 20,
+  },
+  lessonContainer: {
+    alignItems: "center",
+  },
+  connectionLine: {
+    width: 4,
+    marginVertical: 4,
+  },
+  lessonsInfo: {
+    flex: 1,
+    paddingTop: 10,
+  },
+  lessonInfo: {
+    marginBottom: 60,
+    paddingLeft: 16,
+  },
+  lessonTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#1F2937",
+    marginBottom: 4,
+  },
+  lessonDescription: {
+    fontSize: 14,
+    color: "#6B7280",
+    marginBottom: 4,
+  },
+  lessonDuration: {
+    fontSize: 12,
+    color: "#9CA3AF",
+    fontWeight: "500",
+  },
+  lockedText: {
+    color: "#9CA3AF",
+  },
+});

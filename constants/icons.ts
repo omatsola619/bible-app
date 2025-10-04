@@ -61,6 +61,9 @@ export const Icons = {
   lightMode: { family: "Material", name: "light-mode", size: 24 },
   darkMode: { family: "Material", name: "dark-mode", size: 24 },
   systemMode: { family: "Material", name: "brightness-auto", size: 24 },
+
+  // Roadmap
+  star: { family: "Material", name: "star", size: 24 },
 } as const;
 
 // Color palette for Duolingo-like design
