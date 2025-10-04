@@ -1,76 +1,76 @@
-import Icon from "@/components/Icon";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { roadmapData } from "@/data/roadmap-data";
-import type { Lesson, RoadmapSection } from "@/types/roadmap";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import Icon from '@/components/Icon'
+import { ThemedText } from '@/components/themed-text'
+import { ThemedView } from '@/components/themed-view'
+import { roadmapData } from '@/data/roadmap-data'
+import type { Lesson, RoadmapSection } from '@/types/roadmap'
 
 export default function HomeScreen() {
   const renderLessonNode = (lesson: Lesson, index: number, isLast: boolean) => {
     const getNodeIcon = () => {
       switch (lesson.status) {
-        case "completed":
-          return <Icon name="check" size={24} color="#FFFFFF" />;
-        case "current":
-          return <Icon name="star" size={24} color="#FFFFFF" />;
-        case "locked":
-          return <Icon name="lock" size={20} color="#FFFFFF" />;
+        case 'completed':
+          return <Icon name="check" size={24} color="#FFFFFF" />
+        case 'current':
+          return <Icon name="star" size={24} color="#FFFFFF" />
+        case 'locked':
+          return <Icon name="lock" size={20} color="#FFFFFF" />
         default:
-          return null;
+          return null
       }
-    };
+    }
 
     const getNodeStyle = () => {
       const baseStyle = {
         width: 60,
         height: 60,
         borderRadius: 30,
-        justifyContent: "center",
-        alignItems: "center",
-        shadowColor: "#000",
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 8,
-      };
+      }
 
       switch (lesson.status) {
-        case "completed":
+        case 'completed':
           return {
             ...baseStyle,
             backgroundColor: lesson.color,
-          };
-        case "current":
+          }
+        case 'current':
           return {
             ...baseStyle,
             backgroundColor: lesson.color,
             borderWidth: 4,
-            borderColor: "#FFFFFF",
-          };
-        case "locked":
+            borderColor: '#FFFFFF',
+          }
+        case 'locked':
           return {
             ...baseStyle,
-            backgroundColor: "#E5E7EB",
+            backgroundColor: '#E5E7EB',
             borderWidth: 2,
-            borderColor: "#9CA3AF",
-          };
+            borderColor: '#9CA3AF',
+          }
         default:
-          return baseStyle;
+          return baseStyle
       }
-    };
+    }
 
     return (
       <View key={lesson.id} style={styles.lessonContainer}>
         <TouchableOpacity
           style={getNodeStyle()}
           onPress={() => {
-            if (lesson.status !== "locked") {
+            if (lesson.status !== 'locked') {
               // TODO: Navigate to lesson
-              console.log("Navigate to lesson:", lesson.title);
+              console.log('Navigate to lesson:', lesson.title)
             }
           }}
-          disabled={lesson.status === "locked"}
+          disabled={lesson.status === 'locked'}
         >
           {getNodeIcon()}
         </TouchableOpacity>
@@ -80,39 +80,30 @@ export default function HomeScreen() {
             style={[
               styles.connectionLine,
               {
-                backgroundColor:
-                  lesson.status === "locked" ? "#E5E7EB" : lesson.color,
+                backgroundColor: lesson.status === 'locked' ? '#E5E7EB' : lesson.color,
                 height: index % 2 === 0 ? 80 : 60, // Zig-zag pattern
               },
             ]}
           />
         )}
       </View>
-    );
-  };
+    )
+  }
 
   const renderSection = (section: RoadmapSection) => {
     return (
       <ThemedView key={section.id} style={styles.sectionContainer}>
-        <View
-          style={[styles.sectionHeader, { backgroundColor: section.color }]}
-        >
+        <View style={[styles.sectionHeader, { backgroundColor: section.color }]}>
           <ThemedText type="title" style={styles.sectionTitle}>
             {section.title}
           </ThemedText>
-          <ThemedText style={styles.sectionDescription}>
-            {section.description}
-          </ThemedText>
+          <ThemedText style={styles.sectionDescription}>{section.description}</ThemedText>
         </View>
 
         <View style={styles.lessonsContainer}>
           <View style={styles.lessonsPath}>
             {section.lessons.map((lesson, index) =>
-              renderLessonNode(
-                lesson,
-                index,
-                index === section.lessons.length - 1
-              )
+              renderLessonNode(lesson, index, index === section.lessons.length - 1)
             )}
           </View>
 
@@ -121,26 +112,20 @@ export default function HomeScreen() {
               <View key={`${lesson.id}-info`} style={styles.lessonInfo}>
                 <ThemedText
                   type="defaultSemiBold"
-                  style={[
-                    styles.lessonTitle,
-                    lesson.status === "locked" && styles.lockedText,
-                  ]}
+                  style={[styles.lessonTitle, lesson.status === 'locked' && styles.lockedText]}
                 >
                   {lesson.title}
                 </ThemedText>
                 <ThemedText
                   style={[
                     styles.lessonDescription,
-                    lesson.status === "locked" && styles.lockedText,
+                    lesson.status === 'locked' && styles.lockedText,
                   ]}
                 >
                   {lesson.description}
                 </ThemedText>
                 <ThemedText
-                  style={[
-                    styles.lessonDuration,
-                    lesson.status === "locked" && styles.lockedText,
-                  ]}
+                  style={[styles.lessonDuration, lesson.status === 'locked' && styles.lockedText]}
                 >
                   {lesson.duration}
                 </ThemedText>
@@ -149,11 +134,11 @@ export default function HomeScreen() {
           </View>
         </View>
       </ThemedView>
-    );
-  };
+    )
+  }
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
       <ThemedView style={styles.container}>
         {/* Duolingo-style top bar */}
         <View style={styles.topBar}>
@@ -188,7 +173,7 @@ export default function HomeScreen() {
         </ScrollView>
       </ThemedView>
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -197,27 +182,27 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: '#F8FAFC',
   },
   topBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
   levelSection: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   levelIcon: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#4CAF50",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 4,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -225,33 +210,33 @@ const styles = StyleSheet.create({
   },
   levelNumber: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   levelText: {
     fontSize: 12,
-    color: "#6B7280",
-    fontWeight: "500",
+    color: '#6B7280',
+    fontWeight: '500',
   },
   statsSection: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 24,
   },
   statItem: {
-    alignItems: "center",
+    alignItems: 'center',
     minWidth: 60,
   },
   statValue: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#1F2937",
+    fontWeight: 'bold',
+    color: '#1F2937',
     marginTop: 4,
   },
   statLabel: {
     fontSize: 11,
-    color: "#6B7280",
-    fontWeight: "500",
-    textAlign: "center",
+    color: '#6B7280',
+    fontWeight: '500',
+    textAlign: 'center',
   },
   scrollView: {
     flex: 1,
@@ -262,9 +247,9 @@ const styles = StyleSheet.create({
   sectionContainer: {
     margin: 16,
     borderRadius: 16,
-    overflow: "hidden",
-    backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
+    overflow: 'hidden',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -276,25 +261,25 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 22,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontWeight: 'bold',
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   sectionDescription: {
     fontSize: 16,
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     opacity: 0.9,
   },
   lessonsContainer: {
     padding: 20,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   lessonsPath: {
-    alignItems: "center",
+    alignItems: 'center',
     marginRight: 20,
   },
   lessonContainer: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   connectionLine: {
     width: 4,
@@ -310,21 +295,21 @@ const styles = StyleSheet.create({
   },
   lessonTitle: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#1F2937",
+    fontWeight: '600',
+    color: '#1F2937',
     marginBottom: 4,
   },
   lessonDescription: {
     fontSize: 14,
-    color: "#6B7280",
+    color: '#6B7280',
     marginBottom: 4,
   },
   lessonDuration: {
     fontSize: 12,
-    color: "#9CA3AF",
-    fontWeight: "500",
+    color: '#9CA3AF',
+    fontWeight: '500',
   },
   lockedText: {
-    color: "#9CA3AF",
+    color: '#9CA3AF',
   },
-});
+})
