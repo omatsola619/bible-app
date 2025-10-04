@@ -4,12 +4,46 @@ import { ThemedView } from "@/components/themed-view";
 import { useTheme } from "@/contexts/theme-context";
 import { roadmapData } from "@/data/roadmap-data";
 import type { Lesson, RoadmapSection } from "@/types/roadmap";
+import { useRef, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { isDark } = useTheme();
-  const styles = getStyles(isDark);
+  const [currentSectionColor, setCurrentSectionColor] = useState(
+    roadmapData.sections[0].color
+  );
+  const scrollViewRef = useRef<ScrollView>(null);
+  const sectionRefs = useRef<{ [key: string]: View | null }>({});
+  const styles = getStyles(isDark, currentSectionColor);
+
+  const handleScroll = (event: {
+    nativeEvent: {
+      contentOffset: { y: number };
+      layoutMeasurement: { height: number };
+    };
+  }) => {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    const screenHeight = event.nativeEvent.layoutMeasurement.height;
+    const centerY = scrollY + screenHeight / 2;
+
+    // Find which section is currently in the center of the screen
+    for (let i = 0; i < roadmapData.sections.length; i++) {
+      const section = roadmapData.sections[i];
+      const sectionRef = sectionRefs.current[section.id];
+
+      if (sectionRef) {
+        sectionRef.measure((_x, _y, _width, _height, _pageX, pageY) => {
+          const sectionTop = pageY;
+          const sectionBottom = pageY + _height;
+
+          if (centerY >= sectionTop && centerY <= sectionBottom) {
+            setCurrentSectionColor(section.color);
+          }
+        });
+      }
+    }
+  };
 
   const renderLessonNode = (lesson: Lesson, index: number, isLast: boolean) => {
     const getNodeIcon = () => {
@@ -97,7 +131,13 @@ export default function HomeScreen() {
 
   const renderSection = (section: RoadmapSection) => {
     return (
-      <ThemedView key={section.id} style={styles.sectionContainer}>
+      <ThemedView
+        key={section.id}
+        style={styles.sectionContainer}
+        ref={(ref) => {
+          sectionRefs.current[section.id] = ref;
+        }}
+      >
         <View
           style={[styles.sectionHeader, { backgroundColor: section.color }]}
         >
@@ -184,9 +224,12 @@ export default function HomeScreen() {
         </View>
 
         <ScrollView
+          ref={scrollViewRef}
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
         >
           {roadmapData.sections.map(renderSection)}
         </ScrollView>
@@ -195,7 +238,7 @@ export default function HomeScreen() {
   );
 }
 
-const getStyles = (isDark: boolean) =>
+const getStyles = (isDark: boolean, currentSectionColor: string) =>
   StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -218,7 +261,7 @@ const getStyles = (isDark: boolean) =>
       width: 50,
       height: 50,
       borderRadius: 25,
-      backgroundColor: "#4CAF50",
+      backgroundColor: currentSectionColor,
       justifyContent: "center",
       alignItems: "center",
       marginBottom: 4,
