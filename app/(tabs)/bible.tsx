@@ -2,6 +2,7 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import Icon from '@/components/Icon'
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
 import { useBible } from '@/contexts/bible-context'
@@ -60,7 +61,7 @@ export default function BibleScreen() {
               {book.name}
             </ThemedText>
           </ThemedView>
-          <ThemedText style={styles.expandIcon}>{isExpanded ? '▼' : '▶'}</ThemedText>
+          <Icon name={isExpanded ? 'down' : 'forward'} size={20} color="#6B7280" />
         </TouchableOpacity>
 
         {isExpanded && (
@@ -85,10 +86,10 @@ export default function BibleScreen() {
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <View style={styles.searchBar}>
-            <ThemedText style={styles.searchIcon}>🔍</ThemedText>
+            <Icon name="search" size={20} color="#6B7280" />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search"
+              placeholder="Search Bible passages..."
               placeholderTextColor="#9CA3AF"
               value={searchQuery}
               onChangeText={setSearchQuery}
