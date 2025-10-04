@@ -9,7 +9,7 @@ export const roadmapData: RoadmapData = {
       color: '#4CAF50', // Green
       lessons: [
         {
-          id: 'jesus-birth',
+          id: 'lesson-john-6-35',
           title: 'The Birth of Jesus',
           description: 'Learn about the nativity story',
           status: 'completed',
